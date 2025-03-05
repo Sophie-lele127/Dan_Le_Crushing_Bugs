@@ -18,23 +18,34 @@ let theButtons = document.querySelectorAll("#buttonHolder img"),
 // functionality always goes in the middle -> how do we want
 // the app to behave?
 
-// Changes the background image of the puzzle board.
-// Also resets any placed puzzle pieces by moving them back to the drag area.
+// Handles the start of a drag event.
+// Stores a reference to the dragged puzzle piece so it can be moved later.
 
-function changeBGImage() {
-  // the `` is a JavaScript template string. It tells the JS engine to evaluate the expression
-  // inside the braces - run that little bit of code. In this case it's just pulling the ID of the
-  // button we clicked on and putting it at the end of the image name (0, 1, 2, 3)
-  // and updating the background-image style of the puzzle board element.
+function handleStartDrag() {
+  console.log("started dragging this piece: ", this);
+  draggedPiece = this;
+}
 
-  // Bug fix #2: Reset puzzle pieces back to the drag area when changing the background
-  dropZones.forEach((zone) => {
-    if (zone.children.length > 0) {
-      document.querySelector(".puzzle-pieces").appendChild(zone.firstChild);
-    }
-  });
+// Prevents the default dragover behavior to allow dropping elements.
 
-  puzzleBoard.style.backgroundImage = `url(images/backGround${this.id}.jpg)`;
+function handleDragOver(e) {
+  e.preventDefault();
+  console.log("you dragged over me");
+}
+
+// Handles dropping a puzzle piece into a drop zone.
+// Ensures that only one puzzle piece can be placed in a drop zone at a time.
+
+function handleDrop(e) {
+  e.preventDefault();
+  console.log("dropped something on me");
+
+  // Bug fix #1: Ensure only one puzzle piece per drop zone
+  if (this.children.length > 0) {
+    return; // If drop zone already has a piece, do not allow another one
+  }
+
+  this.appendChild(draggedPiece);
 }
 
 // Handles the start of a drag event.
